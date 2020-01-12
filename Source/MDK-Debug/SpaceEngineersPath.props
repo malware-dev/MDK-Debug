@@ -1,0 +1,6 @@
+﻿<Project>
+    <PropertyGroup>
+        <SpaceEngineersPath>D:\Steam\SteamApps\common\SpaceEngineers\Bin64</SpaceEngineersPath>
+        <SpaceEngineersLocalModPath>D:\Data\sesaves\Mods</SpaceEngineersLocalModPath>
+    </PropertyGroup>
+</Project>
