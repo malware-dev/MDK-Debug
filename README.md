@@ -21,7 +21,7 @@ for people who don't want to use MDK, and we'll see if I integrate it more compl
   * Make sure SE has completely started, then - in Visual Studio - press the `Debug` menu, `Attach to Process`, and select Space Engineers in the process list.
   * In Space Engineers, Create or load a world where you have a programmable block you wish to test in
   * Open the programmable block in question, select "MDK-SE: Bind DLL"
-  * Select the `.exe` file generated for your MDK project. You'll find it in the `bin\debug` folder of your MDK project
+  * Select the `.exe` file generated for your MDK project. You'll find it in the `bin` folder of your MDK project
     * The program will be immediately loaded and started, so you might want to have placed breakpoints already.
     
     
