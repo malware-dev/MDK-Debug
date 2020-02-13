@@ -22,6 +22,8 @@ namespace MDK.Debug
 
         public bool IsFaulted { get; private set; }
 
+        public bool HasLoadedProgram { get; private set; }
+
         public void Install()
         {
             if (IsInstalled || IsFaulted)
@@ -128,7 +130,6 @@ namespace MDK.Debug
             if (IsFaulted)
                 return;
 
-
             if (!_proxyCache.TryGetValue(programmableBlock, out var proxy))
             {
                 try
@@ -155,7 +156,7 @@ namespace MDK.Debug
             var fileName = await FileDialog.RequestFileName(
                 Resources.ProgrammableBlockExtensions_OnBindScriptDll_BindScriptDLL,
                 Resources.ProgrammableBlockExtensions_OnBindScriptDll_Filters,
-                proxy.FileName);
+                proxy.FileName).ConfigureAwait(false);
 
             if (fileName != null)
                 LoadScriptAssembly(fileName, proxy);
@@ -192,7 +193,11 @@ namespace MDK.Debug
                 return;
             }
 
-            proxy.LoadProgram(programTypes[0]);
+            if (proxy.LoadProgram(programTypes[0]))
+            {
+                HasLoadedProgram = true;
+
+            }
         }
 
         Assembly LoadAssembly(string fileName)

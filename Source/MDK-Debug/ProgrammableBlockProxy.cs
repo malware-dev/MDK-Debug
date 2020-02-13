@@ -99,8 +99,12 @@ namespace MDK.Debug
             _reflections.OnProgramTerminationMethod.Invoke(ProgrammableBlock, new object[] {reason});
         }
 
+        public bool HasLoadedProgram { get; private set; }
+
         public void UnloadProgram()
         {
+            HasLoadedProgram = false;
+            ProgrammableBlock.RaisePropertiesChanged();
             ProgrammableBlock.SendRecompile();
         }
 
@@ -148,7 +152,8 @@ namespace MDK.Debug
                 }
             }, out var response);
             SetDetailedInfo(response);
-
+            HasLoadedProgram = true;
+            ProgrammableBlock.RaisePropertiesChanged();
             return true;
         }
 
