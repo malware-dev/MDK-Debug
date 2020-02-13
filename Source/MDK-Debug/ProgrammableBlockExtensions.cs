@@ -112,7 +112,7 @@ namespace MDK.Debug
 
         bool IsUnbindButtonEnabled(MyProgrammableBlock programmableBlock)
         {
-            return IsWorkable() && _proxyCache.ContainsKey(programmableBlock);
+            return IsWorkable() && _proxyCache.TryGetValue(programmableBlock, out var proxy) && proxy.HasLoadedProgram;
         }
 
         bool IsBindButtonVisible(MyProgrammableBlock programmableBlock)
@@ -160,6 +160,8 @@ namespace MDK.Debug
 
             if (fileName != null)
                 LoadScriptAssembly(fileName, proxy);
+
+            proxy.ProgrammableBlock?.RaisePropertiesChanged();
         }
 
         void LoadScriptAssembly(string fileName, ProgrammableBlockProxy proxy)
