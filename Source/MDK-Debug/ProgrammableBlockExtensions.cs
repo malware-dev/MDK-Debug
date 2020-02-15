@@ -159,7 +159,7 @@ namespace MDK.Debug
                 Resources.ProgrammableBlockExtensions_OnBindScriptDll_Filters,
                 proxy.FileName).ConfigureAwait(false);
 
-            MyLog.Default.WriteLine($"After RequestFileName {Thread.CurrentThread.ManagedThreadId}");
+            MyLog.Default.WriteLine($"After RequestFileName {Thread.CurrentThread.ManagedThreadId} {Debugger.IsAttached}");
             MyLog.Default.Flush();
 
             if (fileName != null)
