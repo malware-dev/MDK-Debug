@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Threading;
 using Sandbox.Engine.Utils;
 using Sandbox.Game.Entities.Blocks;
 using Sandbox.Game.Gui;
@@ -158,8 +159,17 @@ namespace MDK.Debug
                 Resources.ProgrammableBlockExtensions_OnBindScriptDll_Filters,
                 proxy.FileName).ConfigureAwait(false);
 
+            MyLog.Default.WriteLine($"After RequestFileName {Thread.CurrentThread.ManagedThreadId}");
+            MyLog.Default.Flush();
+
             if (fileName != null)
+            {
+                MyLog.Default.WriteLine($"Found {fileName} {Thread.CurrentThread.ManagedThreadId}");
+                MyLog.Default.Flush();
                 LoadScriptAssembly(fileName, proxy);
+                MyLog.Default.WriteLine($"Loaded {fileName} {Thread.CurrentThread.ManagedThreadId}");
+                MyLog.Default.Flush();
+            }
 
             proxy.ProgrammableBlock?.RaisePropertiesChanged();
         }
