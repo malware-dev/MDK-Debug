@@ -1,5 +1,5 @@
 # MDK-Debug
-*** NON-FUNCTIONAL ***
+***NON-FUNCTIONAL***  
 Since Keen now has removed direct plugin support, this project is dead. It would have to be rewritten to be a PluginLoader plugin - but since I personally don't use this plugin any longer, I have no incentive to maintain it. Sorry.
 
 Utility plugin for Space Engineers, allowing direct debugging of Programmable Block scripts via Space Engineers. Designed for MDK projects.
