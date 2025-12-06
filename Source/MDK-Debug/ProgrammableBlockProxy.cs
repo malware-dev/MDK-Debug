@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Reflection;
 using System.Runtime.Serialization;
+using System.Threading.Tasks;
 using Sandbox;
 using Sandbox.Game.Entities.Blocks;
 using Sandbox.Game.Localization;
@@ -140,8 +141,8 @@ namespace MDK.Debug
             EvictIgcContext();
             CreateIgcContext();
             Program.IGC_ContextGetter = () => _igcContextCache;
-
-            ProgrammableBlock.RunSandboxedProgramAction(p =>
+            
+            Action<IMyGridProgram> action = p =>
             {
                 constructor.Invoke(p, null);
 
@@ -150,8 +151,19 @@ namespace MDK.Debug
                     Echo(MyTexts.GetString(MySpaceTexts.ProgrammableBlock_Exception_NoMain));
                     OnProgramTermination(MyProgrammableBlock.ScriptTerminationReason.NoEntryPoint);
                 }
-            }, out var response);
+            };
+            
+            object[] parameters =
+            {
+                action,
+                null
+            };
+
+            _reflections.RunSandboxedProgramActionMethod.Invoke(ProgrammableBlock, parameters);
+            string response = (string)parameters[1];
+
             SetDetailedInfo(response);
+
             HasLoadedProgram = true;
             ProgrammableBlock.RaisePropertiesChanged();
             return true;
@@ -161,7 +173,7 @@ namespace MDK.Debug
         {
             const string StorageDataFieldName = "m_storageData";
             const string InstanceFieldName = "m_instance";
-            const string AssemblyFieldName = "m_assembly";
+            const string AssemblyFieldName = "m_currentAssembly";
             const string TerminationReasonFieldName = "m_terminationReason";
             const string RuntimeFieldName = "m_runtime";
             const string UpdateStorageMethodName = "UpdateStorage";
@@ -169,6 +181,7 @@ namespace MDK.Debug
             const string SetDetailedInfoMethodName = "SetDetailedInfo";
             const string ResetMethodName = "Reset";
             const string OnProgramTerminationMethodName = "OnProgramTermination";
+            const string RunSandboxedProgramActionMethodName = "RunSandboxedProgramAction";
             const string IgcSystemSessionComponentTypeName = "Sandbox.Game.SessionComponents.MyIGCSystemSessionComponent";
             const string StaticPropertName = "Static";
             const string EvictContextForMethodName = "EvictContextFor";
@@ -218,7 +231,7 @@ namespace MDK.Debug
                 EchoTextToDetailInfoMethod = GetMethodInfo(type, EchoTextToDetailInfoMethodName, typeof(void), new[] {typeof(string)});
                 SetDetailedInfoMethod = GetMethodInfo(type, SetDetailedInfoMethodName, typeof(void), new[] {typeof(string)});
                 OnProgramTerminationMethod = GetMethodInfo(type, OnProgramTerminationMethodName, typeof(void), new[] {typeof(MyProgrammableBlock.ScriptTerminationReason)});
-
+                RunSandboxedProgramActionMethod = GetMethodInfo(type, RunSandboxedProgramActionMethodName, typeof(MyProgrammableBlock.ScriptTerminationReason), new[] {typeof(Action<IMyGridProgram>), typeof(string).MakeByRefType()});
                 var gameAssembly = typeof(MySandboxGame).Assembly;
                 var componentType = gameAssembly.GetType(IgcSystemSessionComponentTypeName);
                 if (componentType == null)
@@ -241,6 +254,7 @@ namespace MDK.Debug
             public MethodInfo IgcEvictContextMethod { get; }
             public MethodInfo IgcGetOrMakeContextForMethod { get; }
             public MethodInfo OnProgramTerminationMethod { get; }
+            public MethodInfo RunSandboxedProgramActionMethod { get; }
 
             public MethodInfo GetResetMethod(object runtime)
             {
